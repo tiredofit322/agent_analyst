@@ -1,0 +1,24 @@
+services:
+    postgres:
+        image: postgres:16
+        container_name: mvp_pg
+        restart: unless-stopped
+        env_file: .env
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+    adminer:
+        image: adminer:4
+        container_name: mvp_adminer
+        restart: unless-stopped
+        ports:
+            - "8080:8080"
+
+volumes:
+    pgdata:

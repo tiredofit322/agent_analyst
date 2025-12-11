@@ -1,0 +1,14 @@
+
+    
+    
+    
+    create table "bizmvp"."raw"."customers" (customer_id integer,customer_name text,segment text,country text,created_at date)
+  ;
+    -- dbt seed --
+    
+          insert into "bizmvp"."raw"."customers" (customer_id, customer_name, segment, country, created_at) values
+          (%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s)
+      
+
+;
+  

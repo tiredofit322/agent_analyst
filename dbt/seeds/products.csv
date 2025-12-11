@@ -1,0 +1,6 @@
+product_id,product_name,category,price
+101,Basic Subscription,SaaS,49.00
+102,Pro Subscription,SaaS,199.00
+103,Enterprise Subscription,SaaS,999.00
+201,Onboarding Package,Service,1500.00
+202,Data Migration,Service,5000.00

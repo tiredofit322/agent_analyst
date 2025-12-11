@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Справочник клиентов. Одна строка соответствует одному клиенту. Используется для разрезов и атрибутов клиента."
+    columns:
+      - name: customer_id
+        description: "Уникальный идентификатор клиента. Первичный ключ таблицы."
+        tests:
+          - not_null
+          - unique
+      - name: customer_name
+        description: "Название клиента или компании."
+      - name: segment
+        description: "Сегмент клиента: SMB, MidMarket, Enterprise."
+      - name: country
+        description: "Страна регистрации клиента."
+      - name: created_at
+        description: "Дата, когда клиент впервые появился в системе."
+
+  - name: dim_products
+    description: "Справочник продуктов. Одна строка = один продукт. Используется для разрезов по продуктам."
+    columns:
+      - name: product_id
+        description: "Уникальный идентификатор продукта. Первичный ключ таблицы."
+        tests:
+          - not_null
+          - unique
+      - name: product_name
+        description: "Название продукта."
+      - name: category
+        description: "Категория продукта, например SaaS или Service."
+      - name: price
+        description: "Базовая цена продукта."
+
+  - name: fct_orders
+    description: "Факт-таблица заказов. Каждая строка представляет один заказ клиента. Содержит ссылки на клиентов и продукты, а также основные метрики заказа."
+    columns:
+      - name: order_id
+        description: "Уникальный идентификатор заказа."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: "FK на dim_customers. Указывает, какой клиент сделал заказ."
+        tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+
+      - name: product_id
+        description: "FK на dim_products. Показывает, какой продукт был заказан."
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
+      - name: order_date
+        description: "Дата, когда был совершён заказ."
+
+      - name: quantity
+        description: "Количество единиц продукта в заказе."
+
+      - name: price
+        description: "Цена единицы продукта на момент заказа (взята из dim_products)."
+
+      - name: revenue
+        description: "Выручка по заказу. Рассчитывается как quantity * price."
+        tests:
+          - not_null
+
+      - name: channel
+        description: "Канал продаж: online, direct, partner."

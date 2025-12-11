@@ -1,0 +1,11 @@
+customer_id,customer_name,segment,country,created_at
+1,Acme LLC,SMB,NL,2024-01-15
+2,Globex Inc,MidMarket,DE,2024-02-01
+3,Soylent GmbH,Enterprise,DE,2023-11-20
+4,Initech BV,SMB,NL,2024-03-05
+5,Umbrella SARL,MidMarket,FR,2024-04-12
+6,Stark Industries,Enterprise,US,2023-12-01
+7,Wayne Corp,Enterprise,US,2024-01-02
+8,Wonka SA,SMB,FR,2024-05-21
+9,Tyrell Ltd,MidMarket,UK,2024-06-10
+10,Hooli PLC,Enterprise,UK,2024-02-28

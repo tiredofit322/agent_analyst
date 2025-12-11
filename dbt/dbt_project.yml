@@ -1,0 +1,29 @@
+name: 'biz_mvp'
+version: '1.0.0'
+config-version: 2
+
+profile: 'biz_mvp_profile'
+
+model-paths: ['models']
+seed-paths: ['seeds']
+macro-paths: ['macros']
+analysis-paths: []
+snapshot-paths: []
+
+models:
+  biz_mvp:
+    +materialized: view
+    +persist_docs:
+      relation: true
+      columns: true
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: view
+
+seeds:
+  biz_mvp:
+    # +schema: raw
+    +quote_columns: false
