@@ -1,0 +1,11 @@
+services:
+  py-kernel-server:
+    build: .
+    ports:
+      - "8000:8000"
+    # Минимальные ограничения (лучше усилить, если это не локально)
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "2g"
