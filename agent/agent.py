@@ -1,6 +1,6 @@
 from langchain_ollama import ChatOllama
 from deepagents import create_deep_agent
-from tools import get_tables_description, get_columns_description, run_select
+from tools import get_tables_description, get_columns_description, run_select, python_exec
 
 
 
@@ -22,6 +22,22 @@ Use this to get the description of the columns in a table. You need to provide t
 Use this to run a SELECT query on the database. Feel free to use the tools to get the information you need to answer the user's question. You are only allowed to run SELECT queries, no other queries (drop, insert, update, delete...) are allowed.
 Make sure to write the whole path to the table, including the schema name you found in the get_tables_description or get_columns_description tools. Accessing the tables directly by name is not allowed, only the full path is allowed.
 
+## `python_exec`
+Use this to execute Python code. 
+You can use this to execute any Python code, including complex calculations, data processing, etc. 
+Address this tool for complex analysis tasks, not for simple queries.
+Currently available libraries are:
+- pandas
+- numpy
+- scipy
+- matplotlib
+- seaborn
+- plotly
+- statsmodels
+I  would expect you to use this tool with the other tools available to you.
+You can store the data from run select queries in pandas DataFrames and use them in your code.
+This tool will be particularly useful for tasks related to visualizing data. Use it if the user's question is related to visualizing data.
+
 You can use the tools to get the information you need to answer the user's question.
 I assume your common flow would be:
 1. Get the description of the tables in the database.
@@ -36,10 +52,10 @@ DO NOT MAKE UP INFORMATION. Answer only based on the information you accessed fr
 
 agent = create_deep_agent(
     model=llm,
-    tools=[get_tables_description, get_columns_description, run_select],
+    tools=[get_tables_description, get_columns_description, run_select, python_exec],
     system_prompt=research_instructions
 )
 
-result = agent.invoke({"messages": [{"role": "user", "content": "What is the total number of the customers bought products in 2024 in each of the channels?"}]})
+result = agent.invoke({"messages": [{"role": "user", "content": "как выручка за 2024 год распределена по странам? Представь результат в виде графика"}]})
 
 print(result["messages"][-1].content)

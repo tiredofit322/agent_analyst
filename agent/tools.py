@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import requests
 from dotenv import load_dotenv
 from contextlib import contextmanager
 from decimal import Decimal
@@ -120,3 +121,68 @@ def get_columns_description(table_name: str) -> tuple[list[str], list[list]]:
     """
     columns, data = run_select(sql)
     return columns, data
+
+def python_exec(code: str) -> str:
+    """Execute Python code and return the result"""
+
+    BASE_URL = "http://localhost:8000"
+
+    def python_exec(code: str) -> str:
+        # Create a new session
+        try:
+            logger.info(f"[PYTHON EXEC] Creating session")
+            resp = requests.post(f"{BASE_URL}/sessions")
+            resp.raise_for_status()
+            session_id = resp.json()["session_id"]
+        except Exception as e:
+            return f"Failed to create session: {e}"
+
+        # Execute code through /exec endpoint
+        try:
+            exec_payload = {
+                "session_id": session_id,
+                "code": code,
+                "timeout_sec": 10
+            }
+            logger.info(f"[PYTHON EXEC] Executing code: {code}")
+            exec_resp = requests.post(f"{BASE_URL}/exec", json=exec_payload)
+            exec_resp.raise_for_status()
+            result = exec_resp.json()
+        except Exception as e:
+            # Clean up session even if code execution fails
+            try:
+                requests.delete(f"{BASE_URL}/sessions/{session_id}")
+            except Exception:
+                pass
+            return f"Error during code execution: {e}"
+
+        # Delete the session afterwards
+        try:
+            requests.delete(f"{BASE_URL}/sessions/{session_id}")
+        except Exception:
+            pass
+
+        if not result.get("ok", False):
+            error_msg = result.get("error", "Unknown error")
+            outputs = result.get("outputs", [])
+            return f"Execution failed: {error_msg}\n{outputs}"
+
+        outputs = result.get("outputs", [])
+        output_text = []
+
+        for out in outputs:
+            if out.get("type") == "stream":
+                output_text.append(out.get("text", ""))
+            elif out.get("type") in ("execute_result", "display_data"):
+                data = out.get("data", {})
+                if data.get("text/plain"):
+                    output_text.append(data["text/plain"])
+            elif out.get("type") == "error":
+                output_text.append(
+                    f"Error: {out.get('ename', '')}: {out.get('evalue', '')}\n"
+                    + "\n".join(out.get("traceback", []))
+                )
+
+        return "\n".join(output_text).strip() if output_text else "No output."
+
+    return "Code executed successfully"

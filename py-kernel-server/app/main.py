@@ -71,8 +71,14 @@ def exec_code(req: ExecRequest):
 
         elif msg_type in ("execute_result", "display_data"):
             data = content.get("data", {})
-            # Часто достаточно text/plain; позже добавишь png/html при необходимости
-            outputs.append({"type": msg_type, "data": {"text/plain": data.get("text/plain")}})
+            outputs.append({
+                "type": msg_type,
+                "data": {
+                    "text/plain": data.get("text/plain"),
+                    "image/png": data.get("image/png"),
+                    "text/html": data.get("text/html"),
+                }
+            })
 
         elif msg_type == "error":
             outputs.append({
