@@ -3,6 +3,8 @@ services:
     build: .
     ports:
       - "8000:8000"
+    volumes:
+      - ./outputs:/app/outputs
     # Минимальные ограничения (лучше усилить, если это не локально)
     deploy:
       resources:
