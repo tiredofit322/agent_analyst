@@ -1,6 +1,6 @@
 from langchain_ollama import ChatOllama
 from deepagents import create_deep_agent
-from db import get_tables_description, get_columns_description, run_select
+from tools import get_tables_description, get_columns_description, run_select
 
 
 
